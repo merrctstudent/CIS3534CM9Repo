@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
-#networkFileRW.py
-#Pamela Brauda
-#Thursday, March 3, 2022
+# Author: Chris Merritt
+# Date: April 2, 2023
 #Update routers and switches;
-#read equipment from a file, write updates & errors to file
 
 ##---->>>> Use a try/except clause to import the JSON module
+try:
+    import json
+
+except:
+    print("Json module failed to import")
 
 
 
@@ -13,7 +16,10 @@
 ##         There are 2 files to read this program: equip_r.txt and equip_s.txt
 ##         There are 2 files to write in this program: updated.txt and errors.txt
       
-
+FILEIN1 = "equip_r.txt"
+FILEIN2 = "equip_s.txt"
+FILEOUT1 = "updated.txt"
+FILEOUT2 = "invalid.txt"
 
 
 
@@ -60,19 +66,29 @@ def getValidIP(invalidIPCount, invalidIPAddresses):
 def main():
 
     ##---->>>> open files here
+    with open(FILEIN1) as f:
+        routerimport = f.read()
 
+    with open(FILEIN2) as g:
+        switchimport = g.read()
 
+    with open(FILEOUT1) as h:
+        updatedexport = h.read()
+
+    with open(FILEOUT2) as i:
+        invalidexport = i.read()
+    
 
     
     #dictionaries
     ##---->>>> read the routers and addresses into the router dictionary
 
-    routers = {}
+    routers = json.loads(routerimport)
 
 
     ##---->>>> read the switches and addresses into the switches dictionary
 
-    switches = {}
+    switches = json.loads(switchimport)
 
 
     #the updated dictionary holds the device name and new ip address
@@ -132,20 +148,25 @@ def main():
 
     ##---->>>> write the updated equipment dictionary to a file
 
+    with open(FILEOUT1, 'w') as h:
+        json.dump(updated, h)
+
     
     print("Updated equipment written to file 'updated.txt'")
     print()
     print("\nNumber of invalid addresses attempted:", invalidIPCount)
 
     ##---->>>> write the list of invalid addresses to a file
+
+    with open(FILEOUT2, 'w') as i:
+        json.dump(invalidIPAddresses, i)
     
 
-    print("List of invalid addresses written to file 'errors.txt'")
+    print("List of invalid addresses written to file 'invalid.txt'")
 
 #top-level scope check
 if __name__ == "__main__":
     main()
-
 
 
 
